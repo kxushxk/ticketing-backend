@@ -8,8 +8,11 @@ export const createTicket = async (req, res) => {
     const newTicket = await Ticket.create({
       title,
       description,
-      creator: req.user.id // Captured automatically from your JWT authentication middleware guard
+      creator: req.user.id
     });
+
+    // Automatically trigger an event to update your frontend SocketContext listeners live!
+    req.io.emit('ticket_created', newTicket);
 
     res.status(201).json(newTicket);
   } catch (err) {
